@@ -1,0 +1,150 @@
+# Antigravity Configuration - Translator App
+# Empfohlene VS Code Extensions für dieses Projekt
+
+## Essential Extensions
+
+### Code Quality & Linting
+- ESLint (dbaeumer.vscode-eslint)
+  Grund: JavaScript/React Linting (bereits in package.json konfiguriert)
+
+- Prettier - Code formatter (esbenp.prettier-vscode)
+  Grund: Konsistente Code-Formatierung für JavaScript, CSS, JSON
+
+- Error Lens (usernamehw.errorlens)
+  Grund: Zeigt Errors und Warnings inline im Code
+
+## React Development
+
+- ES7+ React/Redux/React-Native snippets (dsznajder.es7-react-js-snippets)
+  Grund: Schnelle Snippets für React Komponenten (rfc, useState, useEffect, etc.)
+
+- Simple React Snippets (burkeholland.simple-react-snippets)
+  Grund: Zusätzliche React Snippets
+
+## CSS & Styling
+
+- Tailwind CSS IntelliSense (bradlc.vscode-tailwindcss)
+  Grund: Autocomplete und Vorschau für Tailwind Classes
+
+- PostCSS Language Support (csstools.postcss)
+  Grund: PostCSS Syntax-Highlighting (verwendet im Projekt)
+
+- CSS Peek (pranaygp.vscode-css-peek)
+  Grund: Schnelles Navigieren zu CSS Definitionen
+
+## Node.js & Package Management
+
+- npm Intellisense (christian-kohler.npm-intellisense)
+  Grund: Autocomplete für npm package imports
+
+- Import Cost (wix.vscode-import-cost)
+  Grund: Zeigt die Größe von importierten Packages
+
+- Path Intellisense (christian-kohler.path-intellisense)
+  Grund: Autocomplete für Dateipfade
+
+## API & Backend Development
+
+- Thunder Client (rangav.vscode-thunder-client)
+  Grund: API Testing direkt in VS Code (für Backend development)
+
+- REST Client (humao.rest-client)
+  Grund: HTTP Requests aus .http Dateien ausführen
+
+- dotENV (mikestead.dotenv)
+  Grund: Syntax-Highlighting für .env Dateien
+
+## Socket.io Development
+
+- Socket.io Snippets (socketio.vscode-socketio-snippets)
+  Grund: Snippets für Socket.io Client/Server Code
+
+## Git & Version Control
+
+- GitLens (eamodio.gitlens)
+  Grund: Erweiterte Git Features, Blame, History
+
+- Git Graph (mhutchie.git-graph)
+  Grund: Visualisierung der Git History
+
+## Debugging & Console
+
+- Console Ninja (wallabyjs.console-ninja)
+  Grund: Bessere console.log Ausgaben direkt im Editor
+
+- Quokka.js (wallabyjs.quokka-vscode)
+  Grund: Live JavaScript Scratchpad für schnelles Testen
+
+## Code Navigation
+
+- Auto Rename Tag (formulahendry.auto-rename-tag)
+  Grund: Automatisches Umbenennen von HTML/JSX Tags
+
+- Bracket Pair Colorizer 2 (coenraads.bracket-pair-colorizer-2)
+  Grund: Farbige Klammern für bessere Übersicht (falls nicht built-in)
+
+- Indent Rainbow (oderwat.indent-rainbow)
+  Grund: Farbige Einrückung für bessere Code-Struktur
+
+## AI & Productivity
+
+- GitHub Copilot (github.copilot)
+  Grund: AI Code-Completion (optional)
+
+- Tabnine AI (tabnine.tabnine-vscode)
+  Grund: Alternative AI Code-Completion (optional)
+
+## Utilities
+
+- Live Server (ritwickdey.liveserver)
+  Grund: Quick HTML Preview (optional für Prototyping)
+
+- Better Comments (aaron-bond.better-comments)
+  Grund: Farbige Kommentare (TODO, FIXME, etc.)
+
+- Todo Tree (gruntfuggly.todo-tree)
+  Grund: Übersicht über alle TODOs im Projekt
+
+- Code Spell Checker (streetsidesoftware.code-spell-checker)
+  Grund: Rechtschreibprüfung
+
+- German - Code Spell Checker (streetsidesoftware.code-spell-checker-german)
+  Grund: Deutsche Rechtschreibprüfung (für deutsche Texte im Code)
+
+## Project-Specific Notes
+
+### Tech Stack:
+- Frontend: React 19, Vite, Tailwind CSS
+- Backend: Node.js, Express, Socket.io
+- AI: OpenAI API (Whisper, TTS)
+- Real-time: WebRTC Audio, Socket.io
+
+### Wichtige Dateien:
+- client/src/App.jsx - Hauptkomponente
+- client/src/hooks/ - Custom React Hooks
+- server/index.js - Express + Socket.io Server
+- .env - Umgebungsvariablen (OpenAI API Key)
+
+### Development Commands:
+- npm run dev (Client: Vite Dev Server)
+- npm start (Server: Express Server)
+
+### Installation der Extensions:
+Kopiere die Extension IDs aus den Klammern und installiere sie über:
+1. VS Code Command Palette (Cmd+Shift+P)
+2. "Extensions: Install Extension"
+3. Oder nutze die Extensions Seitenleiste
+
+### Automatische Installation:
+Erstelle eine .vscode/extensions.json für automatische Empfehlungen:
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "dsznajder.es7-react-js-snippets",
+    "christian-kohler.npm-intellisense",
+    "eamodio.gitlens",
+    "usernamehw.errorlens"
+  ]
+}

@@ -38,7 +38,9 @@ const SUPPORTED_LANGUAGES = [
 function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [roomId, setRoomId] = useState("");
+  const [roomInput, setRoomInput] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("English");
+  const [targetLanguage, setTargetLanguage] = useState("Spanish");
   const [inCall, setInCall] = useState(false);
   const [messages, setMessages] = useState([]);
   const [connectedUsers, setConnectedUsers] = useState([]);
@@ -134,16 +136,29 @@ function App() {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
   };
 
-  const handleJoinCall = () => {
-    if (!roomId) {
-      const newRoomId = generateRoomId();
-      setRoomId(newRoomId);
-      socketService.joinRoom(newRoomId, selectedLanguage);
-    } else {
-      socketService.joinRoom(roomId, selectedLanguage);
-    }
+  const handleCreateRoom = () => {
+    const newRoomId = generateRoomId();
+    setRoomId(newRoomId);
+    socketService.joinRoom(newRoomId, selectedLanguage);
     setInCall(true);
-    addMessage("system", `Joined call as ${selectedLanguage} speaker`);
+    addMessage(
+      "system",
+      `Neuer Raum erstellt: ${newRoomId} (${selectedLanguage})`,
+    );
+  };
+
+  const handleJoinRoom = () => {
+    if (!roomInput.trim()) {
+      addMessage("error", "Bitte gib eine Raumnummer ein");
+      return;
+    }
+    setRoomId(roomInput.trim().toUpperCase());
+    socketService.joinRoom(roomInput.trim().toUpperCase(), selectedLanguage);
+    setInCall(true);
+    addMessage(
+      "system",
+      `Raum ${roomInput.trim().toUpperCase()} beigetreten (${selectedLanguage})`,
+    );
   };
 
   const handleLeaveCall = () => {
@@ -228,7 +243,12 @@ function App() {
                 <label htmlFor="targetLanguage">Ziel-Sprache</label>
                 <div className="select-wrapper">
                   <Globe size={20} className="select-icon" />
-                  <select id="targetLanguage" className="language-select">
+                  <select
+                    id="targetLanguage"
+                    className="language-select"
+                    value={targetLanguage}
+                    onChange={(e) => setTargetLanguage(e.target.value)}
+                  >
                     {SUPPORTED_LANGUAGES.map((lang) => (
                       <option key={lang} value={lang}>
                         {lang}
@@ -239,9 +259,9 @@ function App() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="contact">Telefon / WhatsApp</label>
+                <label htmlFor="roomNumber">Raum Nummer</label>
                 <div className="room-input-wrapper">
-                  <Phone
+                  <Users
                     size={20}
                     className="select-icon"
                     style={{
@@ -253,24 +273,47 @@ function App() {
                     }}
                   />
                   <input
-                    id="contact"
-                    type="tel"
-                    placeholder="+49 123 456789"
+                    id="roomNumber"
+                    type="text"
+                    placeholder="Z.B. ABC123"
                     className="room-input"
                     style={{ paddingLeft: "48px" }}
+                    value={roomInput}
+                    onChange={(e) => setRoomInput(e.target.value.toUpperCase())}
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter" && roomInput.trim()) {
+                        handleJoinRoom();
+                      }
+                    }}
                   />
                 </div>
               </div>
 
-              <button
-                onClick={handleJoinCall}
-                disabled={!isConnected}
-                className="btn-join"
-                style={{ marginTop: "32px" }}
-              >
-                <Phone size={24} />
-                Anrufen
-              </button>
+              <div style={{ display: "flex", gap: "12px", marginTop: "32px" }}>
+                <button
+                  onClick={handleJoinRoom}
+                  disabled={!isConnected || !roomInput.trim()}
+                  className="btn-join"
+                  style={{ flex: 1 }}
+                >
+                  <Users size={24} />
+                  Raum beitreten
+                </button>
+
+                <button
+                  onClick={handleCreateRoom}
+                  disabled={!isConnected}
+                  className="btn-join"
+                  style={{
+                    flex: 1,
+                    background:
+                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  }}
+                >
+                  <Globe size={24} />
+                  Neuer Raum
+                </button>
+              </div>
 
               {!isConnected && (
                 <div className="connection-status error">

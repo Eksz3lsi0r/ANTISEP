@@ -9,7 +9,7 @@ SERVER_PID=$!
 
 # Start frontend
 echo "🎨 Starting Frontend Client..."
-cd ../client && npm run dev &
+cd client && npm run dev &
 CLIENT_PID=$!
 
 # Handle cleanup

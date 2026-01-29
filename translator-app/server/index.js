@@ -11,7 +11,7 @@ app.use(express.json({ limit: "50mb" }));
 
 // Initialize OpenAI client
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY || "mock-key",
 });
 
 const server = http.createServer(app);
@@ -192,8 +192,47 @@ io.on("connection", (socket) => {
   });
 });
 
-// Transcribe audio using OpenAI Whisper
+// Map language to TTS voice
+function getVoiceForLanguage(language) {
+  // OpenAI TTS voices: alloy, echo, fable, onyx, nova, shimmer
+  // Using different voices for variety
+  const voiceMap = {
+    English: "alloy",
+    Spanish: "nova",
+    French: "shimmer",
+    German: "onyx",
+    Italian: "fable",
+    Portuguese: "echo",
+    Russian: "alloy",
+    Japanese: "shimmer",
+    Korean: "nova",
+    Chinese: "alloy",
+    Arabic: "onyx",
+    Hindi: "fable",
+    Turkish: "echo",
+    Dutch: "alloy",
+    Polish: "nova",
+  };
+
+  return voiceMap[language] || "alloy";
+}
+
+// --- Mock Mode Implementation ---
+
+const apiKey = process.env.OPENAI_API_KEY;
+const isMockMode = !apiKey || apiKey === "your_openai_api_key_here";
+
+if (isMockMode) {
+  console.log("⚠️  OpenAI API Key missing or invalid. Running in MOCK MODE.");
+  console.log("   (Transcriptions and translations will be simulated)");
+}
+
 async function transcribeAudio(audioBuffer, language) {
+  if (isMockMode) {
+    console.log(`[MOCK] Transcribing audio in ${language}...`);
+    return { text: "Hello, this is a simulated transcription from Mock Mode." };
+  }
+
   try {
     // Create a File-like object from the buffer
     const file = new File([audioBuffer], "audio.webm", { type: "audio/webm" });
@@ -212,8 +251,14 @@ async function transcribeAudio(audioBuffer, language) {
   }
 }
 
-// Translate text using GPT-4 Turbo (optimized for speed and quality)
 async function translateText(text, sourceLanguage, targetLanguage) {
+  if (isMockMode) {
+    console.log(
+      `[MOCK] Translating from ${sourceLanguage} to ${targetLanguage}...`,
+    );
+    return `[MOCK] Translated "${text}" to ${targetLanguage}`;
+  }
+
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-4-turbo-preview", // Fast and high quality
@@ -238,8 +283,60 @@ async function translateText(text, sourceLanguage, targetLanguage) {
   }
 }
 
-// Generate speech using OpenAI TTS
 async function generateSpeech(text, language) {
+  if (isMockMode) {
+    console.log(`[MOCK] Generating speech for ${language}...`);
+    // Return a minimal valid WAV buffer (1 second of silence) to prevent client errors
+    // RIFF header + fmt chunk + data chunk (silence)
+    const header = Buffer.from([
+      0x52,
+      0x49,
+      0x46,
+      0x46, // "RIFF"
+      0x24,
+      0x00,
+      0x00,
+      0x00, // Chunk size (36 + data)
+      0x57,
+      0x41,
+      0x56,
+      0x45, // "WAVE"
+      0x66,
+      0x6d,
+      0x74,
+      0x20, // "fmt "
+      0x10,
+      0x00,
+      0x00,
+      0x00, // Subchunk1Size (16)
+      0x01,
+      0x00, // AudioFormat (1 = PCM)
+      0x01,
+      0x00, // NumChannels (1)
+      0x44,
+      0xac,
+      0x00,
+      0x00, // SampleRate (44100)
+      0x88,
+      0x58,
+      0x01,
+      0x00, // ByteRate
+      0x02,
+      0x00, // BlockAlign
+      0x10,
+      0x00, // BitsPerSample (16)
+      0x64,
+      0x61,
+      0x74,
+      0x61, // "data"
+      0x00,
+      0x00,
+      0x00,
+      0x00, // Subchunk2Size (0 mock data)
+    ]);
+    return header;
+  }
+
   try {
     const voice = getVoiceForLanguage(language);
 
@@ -257,7 +354,6 @@ async function generateSpeech(text, language) {
     throw error;
   }
 }
-
 // Map language to Whisper language codes
 function getWhisperLanguageCode(language) {
   const languageMap = {
@@ -279,31 +375,6 @@ function getWhisperLanguageCode(language) {
   };
 
   return languageMap[language] || "en";
-}
-
-// Map language to TTS voice
-function getVoiceForLanguage(language) {
-  // OpenAI TTS voices: alloy, echo, fable, onyx, nova, shimmer
-  // Using different voices for variety
-  const voiceMap = {
-    English: "alloy",
-    Spanish: "nova",
-    French: "shimmer",
-    German: "onyx",
-    Italian: "fable",
-    Portuguese: "echo",
-    Russian: "alloy",
-    Japanese: "shimmer",
-    Korean: "nova",
-    Chinese: "alloy",
-    Arabic: "onyx",
-    Hindi: "fable",
-    Turkish: "echo",
-    Dutch: "alloy",
-    Polish: "nova",
-  };
-
-  return voiceMap[language] || "alloy";
 }
 
 const PORT = process.env.PORT || 3001;
