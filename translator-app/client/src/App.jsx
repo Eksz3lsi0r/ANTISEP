@@ -196,23 +196,21 @@ function App() {
                 <Globe size={48} className="animate-wave" />
               </div>
               <h1 className="app-title gradient-text">Universal Translator</h1>
-              <p className="app-subtitle">
-                Breaking language barriers in real-time
-              </p>
+              <p className="app-subtitle">Übersetze Gespräche in Echtzeit</p>
             </div>
 
             <div className="setup-card glass">
               <div className="setup-header">
-                <h2>Start a Conversation</h2>
-                <p>Connect with anyone, anywhere, in any language</p>
+                <h2>Anruf starten</h2>
+                <p>Verbinde dich in jeder Sprache</p>
               </div>
 
               <div className="form-group">
-                <label htmlFor="language">Your Language</label>
+                <label htmlFor="sourceLanguage">Meine Sprache</label>
                 <div className="select-wrapper">
                   <Globe size={20} className="select-icon" />
                   <select
-                    id="language"
+                    id="sourceLanguage"
                     value={selectedLanguage}
                     onChange={(e) => setSelectedLanguage(e.target.value)}
                     className="language-select"
@@ -227,56 +225,59 @@ function App() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="roomId">Room ID (Optional)</label>
+                <label htmlFor="targetLanguage">Ziel-Sprache</label>
+                <div className="select-wrapper">
+                  <Globe size={20} className="select-icon" />
+                  <select id="targetLanguage" className="language-select">
+                    {SUPPORTED_LANGUAGES.map((lang) => (
+                      <option key={lang} value={lang}>
+                        {lang}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="contact">Telefon / WhatsApp</label>
                 <div className="room-input-wrapper">
+                  <Phone
+                    size={20}
+                    className="select-icon"
+                    style={{
+                      position: "absolute",
+                      left: "16px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      opacity: 0.5,
+                    }}
+                  />
                   <input
-                    id="roomId"
-                    type="text"
-                    value={roomId}
-                    onChange={(e) => setRoomId(e.target.value.toUpperCase())}
-                    placeholder="Leave empty to create new room"
+                    id="contact"
+                    type="tel"
+                    placeholder="+49 123 456789"
                     className="room-input"
-                    maxLength={6}
+                    style={{ paddingLeft: "48px" }}
                   />
                 </div>
-                <p className="input-hint">
-                  Share the Room ID with others to join your conversation
-                </p>
               </div>
 
               <button
                 onClick={handleJoinCall}
                 disabled={!isConnected}
                 className="btn-join"
+                style={{ marginTop: "32px" }}
               >
-                <Phone size={20} />
-                {roomId ? "Join Call" : "Create New Call"}
+                <Phone size={24} />
+                Anrufen
               </button>
 
               {!isConnected && (
                 <div className="connection-status error">
                   <div className="status-dot"></div>
-                  Connecting to server...
+                  Verbinde mit Server...
                 </div>
               )}
-            </div>
-
-            <div className="features-grid">
-              <div className="feature-card glass-dark">
-                <Globe size={32} />
-                <h3>15+ Languages</h3>
-                <p>Communicate across language barriers</p>
-              </div>
-              <div className="feature-card glass-dark">
-                <Volume2 size={32} />
-                <h3>Real-time Voice</h3>
-                <p>Hear translations instantly</p>
-              </div>
-              <div className="feature-card glass-dark">
-                <MessageCircle size={32} />
-                <h3>Live Transcription</h3>
-                <p>See what's being said</p>
-              </div>
             </div>
           </div>
         ) : (
